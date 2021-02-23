@@ -7,3 +7,4 @@
 android/.idea
 build/
 *.iml
+pubspec.lock
