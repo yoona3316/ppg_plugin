@@ -3,5 +3,7 @@
 
 .packages
 .pub/
-
+.idea/
+android/.idea
 build/
+*.iml
