@@ -20,7 +20,7 @@ public class PpgPlugin implements FlutterPlugin {
     private EventChannel ppgChannel;
     private EventChannel hrChannel;
     private StreamHandlerImpl ppgScopeStreamHandler, hrScopeStreamHandler;
-
+    private Context context;
     /**
      * Plugin registration.
      */
@@ -31,7 +31,7 @@ public class PpgPlugin implements FlutterPlugin {
 
     @Override
     public void onAttachedToEngine(FlutterPluginBinding binding) {
-        final Context context = binding.getApplicationContext();
+        this.context = binding.getApplicationContext();
         setupEventChannels(context, binding.getFlutterEngine().getDartExecutor());
     }
 
@@ -43,10 +43,10 @@ public class PpgPlugin implements FlutterPlugin {
 
     private void setupEventChannels(Context context, BinaryMessenger messenger) {
         final SensorManager sensorManager = (SensorManager) context.getSystemService(Context.SENSOR_SERVICE);
-        hrChannel = new EventChannel(messenger, HR_CHANNEL_NAME);
-        hrScopeStreamHandler =
-                new StreamHandlerImpl(sensorManager, Sensor.TYPE_HEART_RATE);
-        hrChannel.setStreamHandler(hrScopeStreamHandler);
+//        hrChannel = new EventChannel(messenger, HR_CHANNEL_NAME);
+//        hrScopeStreamHandler =
+//                new StreamHandlerImpl(sensorManager, Sensor.TYPE_HEART_RATE, context);
+//        hrChannel.setStreamHandler(hrScopeStreamHandler);
         List<Sensor> sensorList = sensorManager.getSensorList(Sensor.TYPE_ALL);
         ppgChannel = new EventChannel(messenger, PPG_CHANNEL_NAME);
         for (Sensor sensor : sensorList) {
@@ -56,7 +56,7 @@ public class PpgPlugin implements FlutterPlugin {
                 int ppgSensorType = sensor.getType();
                 Log.d("ppgSensorFound", sensorName + ":" + ppgSensorType);
                 ppgScopeStreamHandler =
-                        new StreamHandlerImpl(sensorManager, ppgSensorType);
+                        new StreamHandlerImpl(sensorManager, ppgSensorType, context);
                 ppgChannel.setStreamHandler(ppgScopeStreamHandler);
             }
         }
